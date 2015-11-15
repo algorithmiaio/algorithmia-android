@@ -1,18 +1,14 @@
 package com.algorithmia.data;
 
 import com.algorithmia.APIException;
+import com.algorithmia.TypeToken;
 import com.algorithmia.client.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
 import java.io.File;
 import java.io.FileNotFoundException;
-
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.HttpResponse;
 
 /**
  * A data stream
@@ -30,7 +26,7 @@ public class DataDirectory extends DataObject {
      */
     public boolean exists() throws APIException {
         HttpResponse response = this.client.get(getUrl());
-        int status = response.getStatusLine().getStatusCode();
+        int status = response.getStatusCode();
         if(status != 200 && status != 404) {
             throw APIException.fromHttpResponse(response);
         }
@@ -91,7 +87,7 @@ public class DataDirectory extends DataObject {
         JsonElement inputJson = gson.toJsonTree(reqObj);
 
         String url = this.getParent().getUrl();
-        HttpResponse response = this.client.post(url, new StringEntity(inputJson.toString(), ContentType.APPLICATION_JSON));
+        HttpResponse response = this.client.post(url, new HttpEntity.StringEntity(inputJson.toString(), HttpContentType.APPLICATION_JSON));
         HttpClientHelpers.throwIfNotOk(response);
     }
 

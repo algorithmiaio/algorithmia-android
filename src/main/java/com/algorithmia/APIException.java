@@ -1,13 +1,12 @@
 package com.algorithmia;
 
+import com.algorithmia.client.HttpResponse;
+
 import java.io.IOException;
 
 import java.io.InputStream;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.Header;
 
 /**
  * APIException indicates a problem communicating with Algorithmia
@@ -33,20 +32,19 @@ public class APIException extends IOException {
     }
 
     public static APIException fromHttpResponse(HttpResponse response) {
-        final int status = response.getStatusLine().getStatusCode();
-        final HttpEntity entity = response.getEntity();
-        final Header errorHeader = response.getFirstHeader("X-Error-Message");
+        final int status = response.getStatusCode();
+        final InputStream entity = response.getContent();
+        final String errorHeader = response.getFirstHeader("X-Error-Message");
 
         String errorMessage = "";
         if(entity != null) {
             try {
-                final InputStream is = entity.getContent();
-                errorMessage = ": " + IOUtils.toString(is, Charsets.UTF_8);
+                errorMessage = ": " + IOUtils.toString(entity, Charsets.UTF_8);
             } catch(IOException e) {
                 errorMessage = ": IOException reading response: " + e.getMessage();
             }
         } else if(errorHeader != null) {
-            errorMessage = ": " + errorHeader.getValue();
+            errorMessage = ": " + errorHeader;
         }
 
         if(status == 400) {

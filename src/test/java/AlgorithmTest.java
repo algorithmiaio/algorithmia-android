@@ -1,9 +1,9 @@
 import com.algorithmia.Algorithmia;
 import com.algorithmia.algo.*;
+import com.algorithmia.client.Base64;
 import com.algorithmia.TypeToken;
 import com.google.gson.JsonElement;
 
-import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
 import org.junit.Assume;
 import org.junit.Assert;

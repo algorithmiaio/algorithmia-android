@@ -1,7 +1,5 @@
 package com.algorithmia.client;
 
-import org.apache.http.HttpRequest;
-
 /**
  * An Auth implementation for the Algorithmia Simple Auth API Key
  */

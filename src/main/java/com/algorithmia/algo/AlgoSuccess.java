@@ -1,11 +1,11 @@
 package com.algorithmia.algo;
 
 import com.algorithmia.TypeToken;
+import com.algorithmia.client.Base64;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
-import org.apache.commons.codec.binary.Base64;
 
 import java.lang.UnsupportedOperationException;
 import java.lang.reflect.Type;
