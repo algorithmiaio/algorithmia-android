@@ -17,6 +17,7 @@ public class HttpRequest {
     protected final HttpURLConnection connection;
 
     private final String url;
+    private HttpEntity entity = null;
 
     /**
      * @param url the url to connect to
@@ -33,11 +34,7 @@ public class HttpRequest {
         }
     }
     protected void setEntity(HttpEntity entity) throws IOException {
-        connection.setDoOutput(true);
-        final OutputStream requestBody = connection.getOutputStream();
-        entity.writeTo(requestBody);
-        requestBody.flush();
-        requestBody.close();
+        this.entity = entity;
     }
 
     public void addHeader(String key, String value) {
@@ -57,9 +54,19 @@ public class HttpRequest {
         return responseHandler.handleResponse(httpResponse);
     }
     public HttpResponse execute() throws IOException {
+        // Execute HTTP request
+        if(entity != null) {
+            connection.setRequestProperty("Content-Type", entity.getContentType().toString());
+            connection.setDoOutput(true);
+            final OutputStream requestBody = connection.getOutputStream();
+            entity.writeTo(requestBody);
+            requestBody.flush();
+            requestBody.close();
+        }
+
         try {
-            // Execute HTTP request
             connection.connect();
+            // Parse HTTP response
             final int status = connection.getResponseCode();
             final InputStream body;
             // HttpURLConnection will throw an exception if you try to .getInputStream on status code >= 400
@@ -77,8 +84,6 @@ public class HttpRequest {
             System.out.println("Error connecting to URL (" + url + "): " + e);
             e.printStackTrace();
             throw new APIException("Error connecting to URL (" + url + "): ", e);
-        } finally {
-            connection.disconnect();
         }
     }
 }

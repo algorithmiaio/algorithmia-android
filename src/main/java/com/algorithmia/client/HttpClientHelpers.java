@@ -5,6 +5,7 @@ import com.algorithmia.AlgorithmException;
 import com.algorithmia.algo.AlgoFailure;
 import com.algorithmia.algo.AlgoResponse;
 import com.algorithmia.algo.AlgoSuccess;
+import com.algorithmia.algo.ContentType;
 import com.algorithmia.algo.Metadata;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -41,7 +42,7 @@ public class HttpClientHelpers {
             } else {
                 JsonObject metaJson = obj.getAsJsonObject("metadata");
                 Double duration = metaJson.get("duration").getAsDouble();
-                com.algorithmia.algo.ContentType contentType = com.algorithmia.algo.ContentType.fromString(metaJson.get("content_type").getAsString());
+                ContentType contentType = ContentType.fromString(metaJson.get("content_type").getAsString());
                 JsonElement stdoutJson = metaJson.get("stdout");
                 String stdout = (stdoutJson == null) ? null : stdoutJson.getAsString();
                 Metadata meta = new Metadata(contentType, duration, stdout);

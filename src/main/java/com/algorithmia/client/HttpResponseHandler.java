@@ -17,7 +17,7 @@ public abstract class HttpResponseHandler<T> {
     public static class AlgoResponseHandler extends HttpResponseHandler<AlgoResponse> {
         @Override
         protected AlgoResponse handleResponse(HttpResponse response) throws APIException {
-            JsonElement json = HttpClientHelpers.parseResponseJson(response);
+            final JsonElement json = HttpClientHelpers.parseResponseJson(response);
             return HttpClientHelpers.jsonToAlgoResponse(json);
         }
     }
@@ -29,7 +29,7 @@ public abstract class HttpResponseHandler<T> {
         }
         @Override
         protected S handleResponse(HttpResponse response) throws APIException {
-            JsonElement json = HttpClientHelpers.parseResponseJson(response);
+            final JsonElement json = HttpClientHelpers.parseResponseJson(response);
             return gson.fromJson(json, typeToken);
         }
     }

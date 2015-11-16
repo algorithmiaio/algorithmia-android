@@ -90,15 +90,25 @@ public class HttpClient {
      * execute methods to execute a request        
      */        
     private HttpResponse execute(HttpRequest request) throws APIException {     
+        if(this.auth != null) {
+            this.auth.authenticateRequest(request);
+        }
         try {
             return request.execute();
+        } catch(APIException e) {
+            throw e;
         } catch(IOException e) {
             throw new APIException(e.getMessage());
         }
     }
     private <T> T execute(HttpRequest request, HttpResponseHandler<T> consumer) throws APIException {     
+        if(this.auth != null) {
+            this.auth.authenticateRequest(request);
+        }
         try {
             return request.execute(consumer);
+        } catch(APIException e) {
+            throw e;
         } catch(IOException e) {
             throw new APIException(e.getMessage());
         }
