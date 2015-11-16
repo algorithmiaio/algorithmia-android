@@ -1,4 +1,4 @@
-algorithmia-java
+algorithmia-android
 ================
 
 Java client for accessing Algorithmia's algorithm marketplace and data APIs.
