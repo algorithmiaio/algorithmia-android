@@ -6,7 +6,7 @@ publishTo <<= version { (v: String) =>
 
 // Stuff sonatype wants
 pomExtra := (
-  <url>http://www.github.com/algorithmiaio/algorithmia-java</url>
+  <url>http://www.github.com/algorithmiaio/algorithmia-android</url>
   <licenses>
     <license>
       <name>The MIT License (MIT)</name>
@@ -15,8 +15,8 @@ pomExtra := (
     </license>
   </licenses>
   <scm>
-    <connection>scm:git:git@github.com:algorithmiaio/algorithmia-java.git</connection>
-    <url>https://github.com/algorithmiaio/algorithmia-java</url>
+    <connection>scm:git:git@github.com:algorithmiaio/algorithmia-android.git</connection>
+    <url>https://github.com/algorithmiaio/algorithmia-android</url>
   </scm>
   <developers>
     <developer>

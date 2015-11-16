@@ -1,9 +1,9 @@
 
-name := "algorithmia-client"
+name := "algorithmia-android"
 
 organization := "com.algorithmia"
 
-version := "1.0.4-SNAPSHOT"
+version := "1.0.0-SNAPSHOT"
 
 autoScalaLibrary := false
 

@@ -14,7 +14,12 @@ public class HttpPut extends HttpRequest {
         super(url, "PUT");
     }
 
-    public void setEntity(HttpEntity data) {
-
+    @Override
+    public void setEntity(HttpEntity data) throws APIException {
+        try {
+            super.setEntity(data);
+        } catch(IOException e) {
+            throw new APIException(e.getMessage());
+        }
     }
 }

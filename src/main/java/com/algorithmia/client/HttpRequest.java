@@ -12,7 +12,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class HttpRequest {
-    private static final String userAgent = "algorithmia-java/1.0.4";
+    private static final String userAgent = "algorithmia-android/1.0.0";
 
     protected final HttpURLConnection connection;
 
@@ -32,7 +32,7 @@ public class HttpRequest {
             throw new APIException(e.getMessage());
         }
     }
-    public void setEntity(HttpEntity entity) throws IOException {
+    protected void setEntity(HttpEntity entity) throws IOException {
         connection.setDoOutput(true);
         final OutputStream requestBody = connection.getOutputStream();
         entity.writeTo(requestBody);

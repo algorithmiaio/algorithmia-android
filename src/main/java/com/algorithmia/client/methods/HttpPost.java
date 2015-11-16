@@ -4,6 +4,8 @@ import com.algorithmia.APIException;
 import com.algorithmia.client.HttpEntity;
 import com.algorithmia.client.HttpRequest;
 
+import java.io.IOException;
+
 public class HttpPost extends HttpRequest {
     /**
      * @param url the url to connect to
@@ -12,7 +14,12 @@ public class HttpPost extends HttpRequest {
         super(url, "POST");
     }
 
-    public void setEntity(HttpEntity data) {
-
+    @Override
+    public void setEntity(HttpEntity data) throws APIException {
+        try {
+            super.setEntity(data);
+        } catch(IOException e) {
+            throw new APIException(e.getMessage());
+        }
     }
 }

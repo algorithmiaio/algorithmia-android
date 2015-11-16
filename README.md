@@ -16,7 +16,7 @@ The Algorithmia java client is published to Maven central and can be added as a 
 ```xml
 <dependency>
   <groupId>com.algorithmia</groupId>
-  <artifactId>algorithmia-client</artifactId>
+  <artifactId>algorithmia-android</artifactId>
   <version>[,1.1.0)</version>
 </dependency>
 ```
