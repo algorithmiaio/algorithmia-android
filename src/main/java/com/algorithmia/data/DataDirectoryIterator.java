@@ -10,7 +10,7 @@ public class DataDirectoryIterator extends AbstractDataIterator<DataDirectory> {
     }
 
     protected void loadNextPage() throws APIException {
-        List<String> dirnames = new ArrayList<>();
+        List<String> dirnames = new ArrayList<String>();
         for(DataDirectory.DirectoryMetadata meta : dir.getPage(marker).folders) {
             dirnames.add(meta.name);
         }
