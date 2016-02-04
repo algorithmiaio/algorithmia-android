@@ -21,7 +21,8 @@ public class HttpRequest {
 
     /**
      * @param url the url to connect to
-     * @throws MalformedURLException if no protocol is specified, or an unknown protocol is found, or spec is null.
+     * @param method the http method to use (GET, POST, etc...)
+     * @throws APIException if any network or malformed request error
      */
     public HttpRequest(String url, String method) throws APIException {
         this.url = url;

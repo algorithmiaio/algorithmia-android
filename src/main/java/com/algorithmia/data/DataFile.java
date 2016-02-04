@@ -73,6 +73,7 @@ public class DataFile extends DataObject {
 
     /**
      * Gets the data for this file as as string using a custom charset
+     * @param encoding the character encoding of the string
      * @return the data as a String
      * @throws APIException if there were any problems communicating with the Algorithmia API
      * @throws IOException if there were any problems consuming the response content
@@ -104,6 +105,7 @@ public class DataFile extends DataObject {
     /**
      * Upload string data to this file as text using a custom Charset
      * @param data the data to upload
+     * @param contentType the content type of the data being put
      * @throws APIException if there were any problems communicating with the Algorithmia API
      */
     public void put(String data, HttpContentType contentType) throws APIException {
