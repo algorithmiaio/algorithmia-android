@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Android Sample</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="algorithmia_api_key">YOUR ALGORITHMIA API KEY HERE</string>
+
+</resources>
