@@ -3,6 +3,7 @@ package com.algorithmia.data;
 import com.algorithmia.APIException;
 import com.algorithmia.TypeToken;
 import com.algorithmia.client.*;
+import com.algorithmia.client.HttpEntity.StringEntity;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
@@ -90,8 +91,18 @@ public class DataDirectory extends DataObject {
     private class CreateDirectoryRequest {
         @SuppressWarnings("unused")//Used indirectly by GSON
         private String name;
-        CreateDirectoryRequest(String name) {
+        private DataAcl acl;
+        CreateDirectoryRequest(String name, DataAcl acl) {
             this.name = name;
+            this.acl = acl;
+        }
+    }
+
+    private class UpdateDirectoryRequest {
+        @SuppressWarnings("unused")//Used indirectly by GSON
+        private DataAcl acl;
+        UpdateDirectoryRequest(DataAcl acl) {
+            this.acl = acl;
         }
     }
 
@@ -100,7 +111,17 @@ public class DataDirectory extends DataObject {
      * @throws APIException if there were any problems communicating with the Algorithmia API
      */
     public void create() throws APIException {
-        CreateDirectoryRequest reqObj = new CreateDirectoryRequest(this.getName());
+        CreateDirectoryRequest reqObj = new CreateDirectoryRequest(this.getName(), null);
+        Gson gson = new Gson();
+        JsonElement inputJson = gson.toJsonTree(reqObj);
+
+        String url = this.getParent().getUrl();
+        HttpResponse response = this.client.post(url, new HttpEntity.StringEntity(inputJson.toString(), HttpContentType.APPLICATION_JSON));
+        HttpClientHelpers.throwIfNotOk(response);
+    }
+
+    public void create(DataAcl dataAcl) throws APIException {
+        CreateDirectoryRequest reqObj = new CreateDirectoryRequest(this.getName(), dataAcl);
         Gson gson = new Gson();
         JsonElement inputJson = gson.toJsonTree(reqObj);
 
@@ -117,6 +138,23 @@ public class DataDirectory extends DataObject {
     public void delete(boolean forceDelete) throws APIException {
         HttpResponse response = client.delete(getUrl() + "?force=" + forceDelete);
         HttpClientHelpers.throwIfNotOk(response);
+    }
+
+    public DataAcl getPermissions() throws APIException {
+        DirectoryListResponse response = getPage(null, true);
+        return DataAcl.fromAclResponse(response.acl);
+    }
+
+    public boolean updatePermissions(DataAcl dataAcl) throws APIException {
+        UpdateDirectoryRequest request = new UpdateDirectoryRequest(dataAcl);
+        Gson gson = new Gson();
+        JsonElement inputJson = gson.toJsonTree(request);
+
+        StringEntity entity = new StringEntity(inputJson.toString(), HttpContentType.APPLICATION_JSON);
+        HttpResponse response = client.patch(getUrl(), entity);
+
+        HttpClientHelpers.throwIfNotOk(response);
+        return true;
     }
 
     protected class FileMetadata {
@@ -138,12 +176,15 @@ public class DataDirectory extends DataObject {
         protected List<FileMetadata> files;
         protected List<DirectoryMetadata> folders;
         protected String marker;
+        protected Map<String, List<String>> acl;
         protected DirectoryListResponse(List<FileMetadata> files,
                                         List<DirectoryMetadata> folders,
-                                        String marker) {
+                                        String marker,
+                                        Map<String, List<String>> acl) {
             this.files = files;
             this.folders = folders;
             this.marker = marker;
+            this.acl = acl;
         }
     }
 

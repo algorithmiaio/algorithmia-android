@@ -30,11 +30,11 @@ abstract public class DataObject {
     }
 
     public DataDirectory getParent() {
-        return new DataDirectory(client, this.path.replaceFirst("/[^/]+$", ""));
+        return new DataDirectory(client, trimmedPath.replaceFirst("/[^/]+$", ""));
     }
 
     public String getName() {
-        return this.path.substring(this.path.lastIndexOf("/") + 1);
+        return trimmedPath.substring(trimmedPath.lastIndexOf("/") + 1);
     }
 
     public DataObjectType getType() {

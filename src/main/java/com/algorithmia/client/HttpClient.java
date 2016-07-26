@@ -4,6 +4,7 @@ import com.algorithmia.APIException;
 import com.algorithmia.TypeToken;
 import com.algorithmia.client.methods.HttpDelete;
 import com.algorithmia.client.methods.HttpGet;
+import com.algorithmia.client.methods.HttpPatch;
 import com.algorithmia.client.methods.HttpPost;
 import com.algorithmia.client.methods.HttpPut;
 import com.algorithmia.client.methods.HttpHead;
@@ -102,6 +103,16 @@ public class HttpClient {
 
     public HttpResponse delete(String url) throws APIException {
         final HttpDelete request = new HttpDelete(url);
+        return execute(request);
+    }
+
+    /*
+     * PATCH requests
+     */
+
+    public HttpResponse patch(String url, HttpEntity data) throws APIException {
+        final HttpPatch request = new HttpPatch(url);
+        request.setEntity(data);
         return execute(request);
     }
 
