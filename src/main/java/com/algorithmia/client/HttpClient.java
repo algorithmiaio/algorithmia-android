@@ -10,6 +10,9 @@ import com.algorithmia.client.methods.HttpHead;
 import com.algorithmia.client.HttpResponseHandler.JsonDeserializeResponseHandler;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Map;
 
 // TODO: Async
 //  - Stream input
@@ -27,6 +30,31 @@ public class HttpClient {
         this.auth = auth;
     }
 
+    /**
+     * Modifies a url to add on any query parameters
+     */
+    private String addQueryParameters(String baseUrl, Map<String,String> params) {
+        String query = "";
+        if (params != null && params.size() > 0) {
+            int count = 0;
+            for(Map.Entry<String,String> param : params.entrySet()) {
+                if(count == 0) {
+                    query += "?";
+                } else {
+                    query += "&";
+                }
+                String key = param.getKey();
+                String value = param.getValue();
+                try {
+                    key = URLEncoder.encode(key, "UTF-8");
+                    value = URLEncoder.encode(value, "UTF-8");
+                } catch(UnsupportedEncodingException e) {}
+                query += key + "=" + value;
+                count++;
+            }
+        }
+        return baseUrl + query;
+    }
     /*
      * GET requests
      */
@@ -36,8 +64,8 @@ public class HttpClient {
         return execute(request);
     }
 
-    public <T> T get(String url, TypeToken<T> typeToken) throws APIException {
-        final HttpGet request = new HttpGet(url);
+    public <T> T get(String url, TypeToken<T> typeToken, Map<String,String> params) throws APIException {
+        final HttpGet request = new HttpGet(addQueryParameters(url,params));
         HttpResponseHandler<T> consumer = new JsonDeserializeResponseHandler<T>(typeToken);
         return execute(request, consumer);
     }

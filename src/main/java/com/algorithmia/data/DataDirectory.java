@@ -6,7 +6,9 @@ import com.algorithmia.client.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -16,7 +18,7 @@ import java.io.FileNotFoundException;
 public class DataDirectory extends DataObject {
 
     public DataDirectory(HttpClient client, String dataUrl) {
-        super(client, dataUrl);
+        super(client, dataUrl, DataObjectType.DIRECTORY);
     }
 
     /**
@@ -39,12 +41,28 @@ public class DataDirectory extends DataObject {
      * @return the list of files
      * @throws APIException if there were any problems communicating with the Algorithmia API
      */
+    @Deprecated
     public DataFileIterator getFileIter() throws APIException {
         return new DataFileIterator(this);
     }
+    public Iterable<DataFile> files() throws APIException {
+        return new Iterable<DataFile>() {
+            public DataFileIterator iterator() {
+                return new DataFileIterator(DataDirectory.this);
+            }
+        };
+    }
 
+    @Deprecated
     public DataDirectoryIterator getDirIter() throws APIException{
         return new DataDirectoryIterator(this);
+    }
+    public Iterable<DataDirectory> dirs() throws APIException {
+        return new Iterable<DataDirectory>() {
+            public DataDirectoryIterator iterator() {
+                return new DataDirectoryIterator(DataDirectory.this);
+            }
+        };
     }
 
     /**
@@ -135,8 +153,17 @@ public class DataDirectory extends DataObject {
      * @return a page of files and directories that exist within this directory
      * @throws APIException if there were any problems communicating with the Algorithmia API
      */
-    protected DirectoryListResponse getPage(String marker) throws APIException {
-        String url = (marker == null) ? getUrl() : getUrl() + "?marker=" + marker;
-        return client.get(url, new TypeToken<DirectoryListResponse>(){});
+    protected DirectoryListResponse getPage(String marker, Boolean getAcl) throws APIException {
+        String url = getUrl();
+
+        Map<String, String> params = new HashMap<String, String>();
+        if (marker != null) {
+            params.put("marker", marker);
+        }
+        if (getAcl) {
+            params.put("acl", getAcl.toString());
+        }
+
+        return client.get(url, new TypeToken<DirectoryListResponse>(){}, params);
     }
 }

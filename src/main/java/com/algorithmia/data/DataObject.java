@@ -12,12 +12,21 @@ import java.net.URLEncoder;
  */
 abstract public class DataObject {
 
-    public final String path;
-    protected final HttpClient client;
+    public enum DataObjectType {
+        FILE,
+        DIRECTORY
+    }
 
-    public DataObject(HttpClient client, String dataUrl) {
+    public final String path;
+    final String trimmedPath;
+    protected final HttpClient client;
+    protected final DataObjectType dataType;
+
+    public DataObject(HttpClient client, String dataUrl, DataObjectType dataObjectType) {
         this.client = client;
         this.path = dataUrl.replaceAll("^data://|^/", "");
+        this.trimmedPath = getTrimmedPath(this.path);
+        this.dataType = dataObjectType;
     }
 
     public DataDirectory getParent() {
@@ -26,6 +35,18 @@ abstract public class DataObject {
 
     public String getName() {
         return this.path.substring(this.path.lastIndexOf("/") + 1);
+    }
+
+    public DataObjectType getType() {
+        return this.dataType;
+    }
+
+    public boolean isFile() {
+        return this.dataType == DataObjectType.FILE;
+    }
+
+    public boolean isDirectory() {
+        return this.dataType == DataObjectType.DIRECTORY;
     }
 
     abstract public boolean exists() throws APIException;
@@ -45,5 +66,15 @@ abstract public class DataObject {
     @Override
     public String toString() {
         return "data://" + path;
+    }
+
+    // This is needed for directory support. We want to support directories that end with
+    // a slash and those that don't.
+    private static String getTrimmedPath(String path) {
+        String result = path;
+        if (result.endsWith("/")) {
+            result = result.substring(0, result.length() - 1);
+        }
+        return result;
     }
 }
