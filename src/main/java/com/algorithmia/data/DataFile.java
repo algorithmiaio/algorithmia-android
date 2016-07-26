@@ -19,7 +19,7 @@ import com.algorithmia.client.*;
 public class DataFile extends DataObject {
 
     public DataFile(HttpClient client, String dataUrl) {
-        super(client, dataUrl);
+        super(client, dataUrl, DataObjectType.FILE);
     }
 
      /**

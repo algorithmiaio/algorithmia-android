@@ -194,7 +194,7 @@ public class DataDirectory extends DataObject {
      * @return a page of files and directories that exist within this directory
      * @throws APIException if there were any problems communicating with the Algorithmia API
      */
-    protected DirectoryListResponse getPage(String marker, Boolean getAcl) throws APIException {
+    protected DirectoryListResponse getPage(String marker, boolean getAcl) throws APIException {
         String url = getUrl();
 
         Map<String, String> params = new HashMap<String, String>();
@@ -202,7 +202,7 @@ public class DataDirectory extends DataObject {
             params.put("marker", marker);
         }
         if (getAcl) {
-            params.put("acl", getAcl.toString());
+            params.put("acl", Boolean.toString(getAcl));
         }
 
         return client.get(url, new TypeToken<DirectoryListResponse>(){}, params);
