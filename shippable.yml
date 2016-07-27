@@ -8,7 +8,7 @@ build_environment: ubuntu1404
 #Language
 language: java
 scala:
-   - 2.11.7
+   - 2.11.8
 
 jdk:
   - openjdk7

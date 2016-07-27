@@ -15,9 +15,9 @@ javacOptions ++= Seq("-source", "1.6", "-target", "1.6")
 javacOptions in doc := Seq("-source", "1.6")
 
 libraryDependencies ++= Seq(
-  "com.google.code.gson" % "gson" % "2.5",
-  "commons-io" % "commons-io" % "2.4",
-  "com.novocode" % "junit-interface" % "0.8" % "test->default",
+  "com.google.code.gson" % "gson" % "2.7",
+  "commons-io" % "commons-io" % "2.5",
+  "com.novocode" % "junit-interface" % "0.11" % "test->default",
   "junit" % "junit" % "4.12" % "test"
 )
 
