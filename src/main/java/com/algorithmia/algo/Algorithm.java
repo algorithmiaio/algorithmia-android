@@ -16,16 +16,14 @@ import java.util.concurrent.TimeUnit;
  * Represents an Algorithmia algorithm that can be called.
  */
 public final class Algorithm {
-    private AlgorithmRef algoRef;
-    private HttpClient client;
-
-    private Map<String,String> options = new HashMap<String, String>();
-    private AlgorithmOutputType outputType = AlgorithmOutputType.DEFAULT;
+    private final AlgorithmRef algoRef;
+    private final HttpClient client;
+    private final Map<String, String> options;
+    private final AlgorithmOutputType outputType;
     private final static Gson gson = new Gson();
 
     public Algorithm(HttpClient client, AlgorithmRef algoRef) {
-        this.client = client;
-        this.algoRef = algoRef;
+        this(client, algoRef, new HashMap<String, String>());
     }
 
     public Algorithm(HttpClient client, AlgorithmRef algoRef, Map<String, String> options) {
@@ -39,15 +37,15 @@ public final class Algorithm {
         }
     }
 
-    public Algorithm setOptions(Map<String, String> options) {
+    public Algorithm setOptions(Map<String,String> options) {
         if (options != null) {
-            return new Algorithm(client, algoRef, new HashMap<String, String>(options));
+            return new Algorithm(client, algoRef, new HashMap<String,String>(options));
         }
-        return new Algorithm(client, algoRef, new HashMap<String, String>());
+        return new Algorithm(client, algoRef, new HashMap<String,String>());
     }
 
     public Algorithm setOption(String key, String value) {
-        Map<String, String> optionsClone = new HashMap<String, String>(options);
+        Map<String,String> optionsClone = new HashMap<String,String>(options);
         optionsClone.put(key, value);
         return new Algorithm(client, algoRef, optionsClone);
     }
@@ -68,7 +66,6 @@ public final class Algorithm {
     public Algorithm setOutputType(AlgorithmOutputType outputType) {
         Map<String, String> optionsClone = new HashMap<String, String>(options);
         optionsClone.put(AlgorithmOptions.OUTPUT.toString(), outputType.toString());
-
         return new Algorithm(client, algoRef, optionsClone);
     }
 

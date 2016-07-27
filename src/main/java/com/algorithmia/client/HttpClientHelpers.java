@@ -38,18 +38,19 @@ public class HttpClientHelpers {
                 final JsonObject error = obj.getAsJsonObject("error");
                 final String msg = error.get("message").getAsString();
                 String stacktrace = null;
-                if(error.has("stacktrace")) {
+                if (error.has("stacktrace")) {
                     stacktrace = error.get("stacktrace").getAsString();
                 }
                 return new AlgoFailure(new AlgorithmException(msg, null, stacktrace));
             } else {
+                // TODO: Handle other output types
                 JsonObject metaJson = obj.getAsJsonObject("metadata");
                 Double duration = metaJson.get("duration").getAsDouble();
-                ContentType contentType = ContentType.fromString(metaJson.get("content_type").getAsString());
+                com.algorithmia.algo.ContentType contentType = com.algorithmia.algo.ContentType.fromString(metaJson.get("content_type").getAsString());
                 JsonElement stdoutJson = metaJson.get("stdout");
                 String stdout = (stdoutJson == null) ? null : stdoutJson.getAsString();
                 Metadata meta = new Metadata(contentType, duration, stdout);
-                return new AlgoSuccess(obj.get("result"), meta);
+                return new AlgoSuccess(obj.get("result"), meta, null);
             }
         } else {
             throw new APIException("Unexpected API response: " + json);
