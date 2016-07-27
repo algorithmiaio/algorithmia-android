@@ -72,7 +72,7 @@ public class DataDirectory extends DataObject {
      * @return a handle to the requested file
      */
     public DataFile file(String filename) {
-        return new DataFile(client, path + "/" + filename);
+        return new DataFile(client, trimmedPath + "/" + filename);
     }
 
     /**
