@@ -11,7 +11,8 @@ public class HttpPatch extends HttpRequest {
      * @param url the url to connect to
      */
     public HttpPatch(String url) throws APIException {
-        super(url, "PATCH");
+        super(url, "POST");
+        this.addHeader("X-HTTP-Method-Override", "PATCH");
     }
 
     @Override
