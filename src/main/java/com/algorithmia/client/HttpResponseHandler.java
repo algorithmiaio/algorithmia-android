@@ -8,6 +8,8 @@ import com.google.gson.JsonElement;
 
 import java.lang.reflect.Type;
 
+import static com.algorithmia.algo.Algorithm.AlgorithmOutputType;
+
 public abstract class HttpResponseHandler<T> {
 
     private static final Gson gson = new Gson();
@@ -15,10 +17,19 @@ public abstract class HttpResponseHandler<T> {
     protected abstract T handleResponse(HttpResponse response) throws APIException;
 
     public static class AlgoResponseHandler extends HttpResponseHandler<AlgoResponse> {
+        private AlgorithmOutputType outputType;
+        public AlgoResponseHandler(AlgorithmOutputType outputType) {
+            this.outputType = outputType;
+        }
+
         @Override
         protected AlgoResponse handleResponse(HttpResponse response) throws APIException {
-            final JsonElement json = HttpClientHelpers.parseResponseJson(response);
-            return HttpClientHelpers.jsonToAlgoResponse(json);
+            if(outputType.equals(AlgorithmOutputType.RAW)) {
+                return HttpClientHelpers.parseRawOutput(response);
+            } else {
+                final JsonElement json = HttpClientHelpers.parseResponseJson(response);
+                return HttpClientHelpers.jsonToAlgoResponse(json);
+            }
         }
     }
 

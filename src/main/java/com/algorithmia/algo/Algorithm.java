@@ -109,7 +109,7 @@ public final class Algorithm {
         return client.post(
             algoRef.getUrl(),
             requestEntity,
-            new HttpResponseHandler.AlgoResponseHandler()
+            new HttpResponseHandler.AlgoResponseHandler(outputType)
         );
     }
 
@@ -117,7 +117,7 @@ public final class Algorithm {
         return client.post(
                 algoRef.getUrl(),
                 new HttpEntity.ByteArrayEntity(input),
-                new HttpResponseHandler.AlgoResponseHandler()
+                new HttpResponseHandler.AlgoResponseHandler(outputType)
         );
     }
 

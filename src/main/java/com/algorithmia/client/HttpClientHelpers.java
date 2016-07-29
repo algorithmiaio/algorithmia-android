@@ -10,9 +10,11 @@ import com.algorithmia.algo.Metadata;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.apache.commons.io.IOUtils;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.IOException;
 
 // TODO: Async
 //  - Stream input json
@@ -64,6 +66,17 @@ public class HttpClientHelpers {
         final InputStream is = response.getContent();
         JsonElement json = parser.parse(new InputStreamReader(is));
         return json;
+    }
+
+    public static AlgoResponse parseRawOutput(HttpResponse response) throws APIException {
+        throwIfNotOk(response);
+        try {
+            final InputStream is = response.getContent();
+            String rawOutputString = IOUtils.toString(is, "UTF-8");
+            return new AlgoSuccess(null, null, rawOutputString);
+        } catch(IOException ex) {
+            throw new APIException("IOException: " + ex.getMessage());
+        }
     }
 
 }
