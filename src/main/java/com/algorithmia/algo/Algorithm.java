@@ -109,7 +109,8 @@ public final class Algorithm {
         return client.post(
             algoRef.getUrl(),
             requestEntity,
-            new HttpResponseHandler.AlgoResponseHandler(outputType)
+            new HttpResponseHandler.AlgoResponseHandler(outputType),
+            options
         );
     }
 

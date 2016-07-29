@@ -81,6 +81,10 @@ public class HttpClient {
         return execute(request);
     }
     public <T> T post(String url, HttpEntity data, HttpResponseHandler<T> consumer) throws APIException {
+        return post(url, data, consumer, null);
+    }
+    public <T> T post(String url, HttpEntity data, HttpResponseHandler<T> consumer, Map<String,String> parameters) throws APIException {
+        url = addQueryParameters(url, parameters);
         final HttpPost request = new HttpPost(url);
         request.setEntity(data);
         return execute(request, consumer);
