@@ -1,7 +1,9 @@
 algorithmia-android
-================
+===================
 
-Java client for accessing Algorithmia's algorithm marketplace and data APIs.
+Java client for accessing Algorithmia's algorithm marketplace and data APIs from Android applications.
+
+Note: because our java client depends on Apache HTTP Client, it is not compatible with the Android Runtime. In early versions of android, a legacy version of apache http client came pre-bundled, but was not updated over time. In recent android versions (6.0+) it was removed entirely. The algorithmia-android client uses native HttpURLConnection as its underlying client, as recommended by the Android documentation.
 
 For API documentation, see the [JavaDocs](https://algorithmia.com/docs/lang/java)
 
@@ -11,14 +13,10 @@ For API documentation, see the [JavaDocs](https://algorithmia.com/docs/lang/java
 
 # Getting started
 
-The Algorithmia java client is published to Maven central and can be added as a dependency via:
+The Algorithmia android client is published to Maven central and can be added as a dependency in Android Studio. To add the Algorithmia android client, add the following line to your app/build.gradle file:
 
-```xml
-<dependency>
-  <groupId>com.algorithmia</groupId>
-  <artifactId>algorithmia-android</artifactId>
-  <version>[,1.1.0)</version>
-</dependency>
+```
+  compile "com.algorithmia:algorithmia-android:1.0.1"
 ```
 
 Instantiate a client using your API Key:
