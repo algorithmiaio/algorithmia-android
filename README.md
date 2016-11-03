@@ -27,7 +27,55 @@ AlgorithmiaClient client = Algorithmia.client(apiKey);
 
 Notes:
 - API key may be omitted only when making calls from algorithms running on the Algorithmia cluster
-- Using version range `[,1.1.0)` is recommended as it implies using the latest backward-compatible bugfixes.
+
+
+# Android Threads
+
+Note that it is necessary to perform network operations (such as calling Algorithmia) on a background thread in android, to avoid impacting UI performance. The standard way to acheive this in android is to use an AsyncTask.
+
+See Android documentation about UI vs. Background threads: [Processes and Threads](https://developer.android.com/guide/components/processes-and-threads.html)
+
+```java
+/**
+ * AsyncTask helper to make it easy to call Algorithmia in the background
+ * @param <T> the type of the input to send to the algorithm
+ */
+public abstract class AlgorithmiaTask<T> extends AsyncTask<T, Void, AlgoResponse> {
+    private static final String TAG = "AlgorithmiaTask";
+
+    private String algoUrl;
+    private AlgorithmiaClient client;
+    private Algorithm algo;
+
+    public AlgorithmiaTask(String api_key, String algoUrl) {
+        super();
+
+        this.algoUrl = algoUrl;
+        this.client = Algorithmia.client(api_key);
+        this.algo = client.algo(algoUrl);
+    }
+
+    @Override
+    protected AlgoResponse doInBackground(T... inputs) {
+        if(inputs.length == 1) {
+            T input = inputs[0];
+            // Call algorithmia
+            try {
+                AlgoResponse response = algo.pipe(input);
+                return response;
+            } catch(APIException e) {
+                // Connection error
+                Log.e(TAG, "Algorithmia API Exception", e);
+                return null;
+            }
+        } else {
+            // Too many inputs
+            return null;
+        }
+    }
+}
+```
+
 
 ## Calling Algorithms
 

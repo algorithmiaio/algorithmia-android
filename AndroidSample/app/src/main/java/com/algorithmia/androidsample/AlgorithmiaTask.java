@@ -9,6 +9,10 @@ import com.algorithmia.AlgorithmiaClient;
 import com.algorithmia.algo.AlgoResponse;
 import com.algorithmia.algo.Algorithm;
 
+/**
+ * AsyncTask helper to make it easy to call Algorithmia in the background
+ * @param <T> the type of the input to send to the algorithm
+ */
 public abstract class AlgorithmiaTask<T> extends AsyncTask<T, Void, AlgoResponse> {
     private static final String TAG = "AlgorithmiaTask";
 
