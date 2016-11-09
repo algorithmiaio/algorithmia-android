@@ -146,6 +146,19 @@ byte[] buffer = result.as(new TypeToken<byte[]>(){});
 
 API errors will result in the call to `pipe` throwing `APIException`. Errors that occur durring algorithm execution will result in `AlgorithmException` when attempting to read the response.
 
+```java
+Algorithm algo = client.algo('util/whoopsWrongAlgo')
+try {
+    AlgoResponse result = algo.pipe('Hello, world!');
+    String output = result.asString();
+} catch (APIException ex) {
+    System.out.println("API Exception: " ex.getMessage());
+} catch (AlgorithmException ex) {
+    System.out.println("Algorithm Exception: " ex.getMessage());
+    System.out.println(ex.stacktrace);
+}
+```
+
 ### Request Options
 The client exposes options that can configure algorithm requests. This includes support for changing the timeout or indicating that the API should include stdout in the response:
 
