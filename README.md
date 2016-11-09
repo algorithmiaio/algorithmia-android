@@ -11,9 +11,16 @@ For API documentation, see the [JavaDocs](https://algorithmia.com/docs/lang/java
 
 [![Latest Release](https://img.shields.io/maven-central/v/com.algorithmia/algorithmia-client.svg)](http://repo1.maven.org/maven2/com/algorithmia/algorithmia-client/)
 
-# Getting started
+## Getting started
 
-The Algorithmia android client is published to Maven central and can be added as a dependency in Android Studio. To add the Algorithmia android client, add the following line to your app/build.gradle file:
+The Algorithmia android client is published to Maven central and can be added as a dependency in Android Studio.
+
+**Note:** Because our java client depends on Apache HTTP Client, it is not compatible with the Android Runtime. In early versions of android, a legacy version of apache http client came pre-bundled, but was not updated over time. In recent android versions (6.0+) it was removed entirely. The algorithmia-android client uses native HttpURLConnection as its underlying client, as recommended by the Android documentation.
+
+For API documentation, see the [JavaDocs](https://algorithmia.com/docs/lang/java)
+
+
+To add the Algorithmia android client, add the following line to your app/build.gradle file:
 
 ```
   compile "com.algorithmia:algorithmia-android:1.0.1"
@@ -25,11 +32,10 @@ Instantiate a client using your API Key:
 AlgorithmiaClient client = Algorithmia.client(apiKey);
 ```
 
-Notes:
-- API key may be omitted only when making calls from algorithms running on the Algorithmia cluster
+**Note:** The API key may be omitted only when making calls from algorithms running on the Algorithmia cluster
 
 
-# Android Threads
+## Android Threads
 
 Note that it is necessary to perform network operations (such as calling Algorithmia) on a background thread in android, to avoid impacting UI performance. The standard way to acheive this in android is to use an AsyncTask.
 
@@ -79,7 +85,22 @@ public abstract class AlgorithmiaTask<T> extends AsyncTask<T, Void, AlgoResponse
 
 ## Calling Algorithms
 
-Algorithms are called with the `pipe` method using
+The following examples of calling algorithms are organized by type of input/output which vary between algorithms.
+
+**Note:** A single algorithm may have different input and output types, or accept multiple types of input, so consult the algorithm’s description for usage examples specific to that algorithm.
+
+### Text input/ouput
+
+Call an algorithm with text input by simply passing a string into its pipe method. If the algorithm output is text, call the asString method on the response.
+
+```java
+Algorithm algo = client.algo("algo://demo/Hello/0.1.1");
+AlgoResponse result = algo.pipe("HAL 9000");
+System.out.println(result.asString());
+// -> Hello HAL 9000
+```
+
+### Numeric input/output
 
 ```java
 Algorithm addOne = client.algo("docs/JavaAddOne");
@@ -88,13 +109,43 @@ Integer result = response.as(new TypeToken<Integer>(){});
 Double durationInSeconds = response.getMetadata().duration;
 ```
 
-If you already have serialzied JSON, you can call call `pipeJson` instead:
+### JSON input/output
+
+If you already have serialzied JSON, you can call call `pipeJson` instead and call `asJsonString` on the response:
 
 ```java
-Algorithm foo = client.algo("")
+Algorithm algo = client.algo("algo://WebPredict/ListAnagrams/0.1.0")
 String jsonWords = "[\"transformer\", \"terraforms\", \"retransform\"]"
-AlgoResponse response = addOne.pipeJson(jsonWords)
+AlgoResponse response = algo.pipeJson(jsonWords)
+// -> "[\"transformer\", \"retransform\"]"
 ```
+
+### Binary input/output
+
+Call an algorithm with binary input by passing a `byte[]` into the `pipe` method. If the algorithm response is binary data, then call the `as` method on the response with a `byte[]` TypeToken to obtain the raw byte array.
+
+```java
+byte[] input = Files.readAllBytes(new File("/path/to/bender.jpg").toPath());
+AlgoResponse result = client.algo("opencv/SmartThumbnail/0.1").pipe(input);
+byte[] buffer = result.as(new TypeToken<byte[]>(){});
+// -> [byte array]
+```
+
+### Error Handling
+
+API errors will result in the call to `pipe` throwing `APIException`. Errors that occur durring algorithm execution will result in `AlgorithmException` when attempting to read the response.
+
+### Request Options
+The client exposes options that can configure algorithm requests. This includes support for changing the timeout or indicating that the API should include stdout in the response:
+
+```java
+Algorithm algo = client.algo("algo://demo/Hello/0.1.1")
+                         .setTimeout(1, TimeUnit.MINUTES)
+                         .setStdout(true);
+AlgoResponse result = algo.pipe("HAL 9000");
+Double stdout = response.getMetadata().stdout;
+```
+**Note:** setStdout(true) is ignored if you do not have access to the algorithm source.
 
 ## Working with Data
 
