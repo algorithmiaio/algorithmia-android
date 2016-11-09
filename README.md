@@ -13,14 +13,14 @@ For API documentation, see the [JavaDocs](https://algorithmia.com/docs/lang/java
 
 ## Getting started
 
-The Algorithmia android client is published to Maven central and can be added as a dependency in Android Studio.
+The Algorithmia Android client is published to Maven central and can be added as a dependency in Android Studio.
 
-**Note:** Because our java client depends on Apache HTTP Client, it is not compatible with the Android Runtime. In early versions of android, a legacy version of apache http client came pre-bundled, but was not updated over time. In recent android versions (6.0+) it was removed entirely. The algorithmia-android client uses native HttpURLConnection as its underlying client, as recommended by the Android documentation.
+**Note:** Because our Java client depends on Apache HTTP Client, it is not compatible with the Android Runtime. In early versions of android, a legacy version of apache http client came pre-bundled, but was not updated over time. In recent android versions (6.0+) it was removed entirely. The algorithmia-android client uses native HttpURLConnection as its underlying client, as recommended by the Android documentation.
 
 For API documentation, see the [JavaDocs](https://algorithmia.com/docs/lang/java)
 
 
-To add the Algorithmia android client, add the following line to your app/build.gradle file:
+To add the Algorithmia Android client, add the following line to your app/build.gradle file:
 
 ```
   compile "com.algorithmia:algorithmia-android:1.0.1"
@@ -35,9 +35,9 @@ AlgorithmiaClient client = Algorithmia.client(apiKey);
 **Note:** The API key may be omitted only when making calls from algorithms running on the Algorithmia cluster
 
 
-## Android Threads
+### Android Threads
 
-Note that it is necessary to perform network operations (such as calling Algorithmia) on a background thread in android, to avoid impacting UI performance. The standard way to acheive this in android is to use an AsyncTask.
+It is necessary to perform network operations (such as calling Algorithmia) on a background thread in android, to avoid impacting UI performance. The standard way to acheive this in android is to use an AsyncTask.
 
 See Android documentation about UI vs. Background threads: [Processes and Threads](https://developer.android.com/guide/components/processes-and-threads.html)
 
@@ -111,12 +111,23 @@ Double durationInSeconds = response.getMetadata().duration;
 
 ### JSON input/output
 
-If you already have serialzied JSON, you can call call `pipeJson` instead and call `asJsonString` on the response:
+Call an algorithm with JSON input by simply passing in a type that can be serialized to JSON, including most plain old java objects and collection types. If the algorithm output is JSON, call the as method on the response with a TypeToken containing the type that it should be deserialized into:
 
 ```java
-Algorithm algo = client.algo("algo://WebPredict/ListAnagrams/0.1.0")
-String jsonWords = "[\"transformer\", \"terraforms\", \"retransform\"]"
-AlgoResponse response = algo.pipeJson(jsonWords)
+Algorithm algo = client.algo("algo://WebPredict/ListAnagrams/0.1.0");
+List<String> words = Arrays.asList(("transformer", "terraforms", "retransform");
+AlgoResponse result = algo.pipe(words);
+// WebPredict/ListAnagrams returns an array of strings, so cast the result:
+List<String> anagrams = result.as(new TypeToken<List<String>>(){});
+// -> List("transformer", "retransform")
+```
+
+If you already have serialized JSON, you can call call `pipeJson` instead and call `asJsonString` on the response:
+
+```java
+Algorithm algo = client.algo("algo://WebPredict/ListAnagrams/0.1.0");
+String jsonWords = "[\"transformer\", \"terraforms\", \"retransform\"]";
+AlgoResponse response = algo.pipeJson(jsonWords);
 // -> "[\"transformer\", \"retransform\"]"
 ```
 
