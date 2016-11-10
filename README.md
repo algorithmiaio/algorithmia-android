@@ -37,7 +37,7 @@ AlgorithmiaClient client = Algorithmia.client(apiKey);
 
 ### Android Threads
 
-It is necessary to perform network operations (such as calling Algorithmia) on a background thread in android, to avoid impacting UI performance. The standard way to acheive this in android is to use an AsyncTask.
+It is necessary to perform network operations (such as calling Algorithmia) on a background thread in Android, to avoid impacting UI performance. The standard way to acheive this in Android is to use an AsyncTask.
 
 See Android documentation about UI vs. Background threads: [Processes and Threads](https://developer.android.com/guide/components/processes-and-threads.html)
 
@@ -113,7 +113,7 @@ Double durationInSeconds = response.getMetadata().duration;
 
 ### JSON input/output
 
-Call an algorithm with JSON input by simply passing in a type that can be serialized to JSON, including most plain old java objects and collection types. If the algorithm output is JSON, call the as method on the response with a TypeToken containing the type that it should be deserialized into:
+Call an algorithm with JSON input by simply passing in a type that can be serialized to JSON, including most plain old java objects and collection types. If the algorithm output is JSON, call the `as` method on the response with a `TypeToken` containing the type that it should be deserialized into:
 
 ```java
 import com.algorithmia.TypeToken;
@@ -121,12 +121,12 @@ import com.algorithmia.TypeToken;
 Algorithm algo = client.algo("algo://WebPredict/ListAnagrams/0.1.0");
 List<String> words = Arrays.asList(("transformer", "terraforms", "retransform");
 AlgoResponse result = algo.pipe(words);
-// WebPredict/ListAnagrams returns an array of strings, so cast the result:
+// WebPredict/ListAnagrams returns a JSON array of strings, so change to Java array
 List<String> anagrams = result.as(new TypeToken<List<String>>(){});
-// -> List("transformer", "retransform")
+// -> ["transformer", "retransform"]
 ```
 
-If you already have serialized JSON, you can call call `pipeJson` instead and call `asJsonString` on the response:
+If you already have serialized JSON, you can use `pipeJson` and call `asJsonString` on the response:
 
 ```java
 Algorithm algo = client.algo("algo://WebPredict/ListAnagrams/0.1.0");
@@ -141,8 +141,9 @@ Call an algorithm with binary input by passing a `byte[]` into the `pipe` method
 
 ```java
 import com.algorithmia.TypeToken;
+import org.apache.commons.io.FileUtils;
 
-byte[] input = Files.readAllBytes(new File("/path/to/bender.jpg").toPath());
+byte[] input = FileUtils.readFileToByteArray(new File("/path/to/bender.jpg"));
 AlgoResponse result = client.algo("opencv/SmartThumbnail/0.1").pipe(input);
 byte[] buffer = result.as(new TypeToken<byte[]>(){});
 // -> [byte array]
