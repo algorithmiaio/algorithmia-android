@@ -103,6 +103,8 @@ System.out.println(result.asString());
 ### Numeric input/output
 
 ```java
+import com.algorithmia.TypeToken;
+
 Algorithm addOne = client.algo("docs/JavaAddOne");
 AlgoResponse response = addOne.pipe(41);
 Integer result = response.as(new TypeToken<Integer>(){});
@@ -114,6 +116,8 @@ Double durationInSeconds = response.getMetadata().duration;
 Call an algorithm with JSON input by simply passing in a type that can be serialized to JSON, including most plain old java objects and collection types. If the algorithm output is JSON, call the as method on the response with a TypeToken containing the type that it should be deserialized into:
 
 ```java
+import com.algorithmia.TypeToken;
+
 Algorithm algo = client.algo("algo://WebPredict/ListAnagrams/0.1.0");
 List<String> words = Arrays.asList(("transformer", "terraforms", "retransform");
 AlgoResponse result = algo.pipe(words);
@@ -136,6 +140,8 @@ AlgoResponse response = algo.pipeJson(jsonWords);
 Call an algorithm with binary input by passing a `byte[]` into the `pipe` method. If the algorithm response is binary data, then call the `as` method on the response with a `byte[]` TypeToken to obtain the raw byte array.
 
 ```java
+import com.algorithmia.TypeToken;
+
 byte[] input = Files.readAllBytes(new File("/path/to/bender.jpg").toPath());
 AlgoResponse result = client.algo("opencv/SmartThumbnail/0.1").pipe(input);
 byte[] buffer = result.as(new TypeToken<byte[]>(){});
