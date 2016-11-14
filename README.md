@@ -143,7 +143,9 @@ Call an algorithm with binary input by passing a `byte[]` into the `pipe` method
 import com.algorithmia.TypeToken;
 import org.apache.commons.io.FileUtils;
 
-byte[] input = FileUtils.readFileToByteArray(new File("/path/to/bender.jpg"));
+URL url = new URL("https://stopthehitch.files.wordpress.com/2013/06/arnold-schwarzenegger-1920x1080.jpg");
+byte[] input = IOUtils.toByteArray(url.openConnection().getInputStream());
+// Call SmartThumbnail algorithm passing in byte array as input
 AlgoResponse result = client.algo("opencv/SmartThumbnail/0.1").pipe(input);
 byte[] buffer = result.as(new TypeToken<byte[]>(){});
 // -> [byte array]
@@ -154,15 +156,14 @@ byte[] buffer = result.as(new TypeToken<byte[]>(){});
 API errors will result in the call to `pipe` throwing `APIException`. Errors that occur durring algorithm execution will result in `AlgorithmException` when attempting to read the response.
 
 ```java
-Algorithm algo = client.algo('util/whoopsWrongAlgo')
+Algorithm algo = client.algo("util/whoopsWrongAlgo")
 try {
-    AlgoResponse result = algo.pipe('Hello, world!');
+    AlgoResponse result = algo.pipe("Hello, world!");
     String output = result.asString();
-} catch (APIException ex) {
-    System.out.println("API Exception: " ex.getMessage());
-} catch (AlgorithmException ex) {
-    System.out.println("Algorithm Exception: " ex.getMessage());
-    System.out.println(ex.stacktrace);
+    algoOutput.setText(output)
+} catch (AlgorithmException e) {
+    AlgoFailure failure = (AlgoFailure) response;
+    algoOutput.setText("Algorithm Error: " + failure.error);
 }
 ```
 
@@ -170,17 +171,19 @@ try {
 The client exposes options that can configure algorithm requests. This includes support for changing the timeout or indicating that the API should include stdout in the response:
 
 ```java
+// setTimeout takes long class, set to 10 minutes
+long lg = 600L;
 Algorithm algo = client.algo("algo://demo/Hello/0.1.1")
-                         .setTimeout(1, TimeUnit.MINUTES)
+                         .setTimeout(lg, TimeUnit.MINUTES)
                          .setStdout(true);
 AlgoResponse result = algo.pipe("HAL 9000");
-Double stdout = response.getMetadata().stdout;
+// -> "Hello Hal 9000"
 ```
 **Note:** setStdout(true) is ignored if you do not have access to the algorithm source.
 
 ## Working with Data
 
-The Algorithmia Java client also provides a way to manage both Algorithmia hosted data
+The Algorithmia Android client also provides a way to manage both Algorithmia hosted data
 and data from Dropbox or S3 accounts that you've connected to you Algorithmia account.
 
 This client provides a `DataFile` type (generally created by `client.file(uri)`)
@@ -206,7 +209,7 @@ Upload files by calling `put` on a `DataFile` object, or by calling `putFile` on
 ```java
 DataDirectory robots = client.dir("data://.my/robots");
 
-// Upload local file
+// Upload local file - for example this path and file could be from sdcard.
 robots.putFile(new File("/path/to/Optimus_Prime.png"));
 // Write a text file
 robots.file("Optimus_Prime.txt").put("Leader of the Autobots");
@@ -222,13 +225,13 @@ Download files by calling `getString`, `getBytes`, or `getFile` on a DataFile ob
 DataDirectory robots = client.dir("data://.my/robots");
 
 // Download file and get the file handle
-File t800File = robots.file("T-800.png").getFile();
+File OPFile = robots.file("Optimus_Prime.txt").getFile();
 
 // Get the file's contents as a string
-String t800Text = robots.file("T-800.txt").getString();
+String OPText = robots.file("Optimus_Prime.txt").getString();
 
 // Get the file's contents as a byte array
-byte[] t800Bytes = robots.file("T-800.png").getBytes();
+byte[] OPBytes = robots.file("Optimus_Prime.png").getBytes();
 ```
 
 ### Delete files and directories
@@ -238,7 +241,7 @@ Delete files and directories by calling `delete` on their respective `DataFile` 
 if it contains files or other directories.
 
 ```java
-client.file("data://.my/robots/C-3PO.txt").delete();
+client.file("data://.my/robots/Optimus_Prime.txt").delete();
 client.dir("data://.my/robots").delete(false);
 ```
 
@@ -250,13 +253,13 @@ Iterate over the contents of a directory using the iterator returned by calling 
 // List top level directories
 DataDirectory myRoot = client.dir("data://.my");
 for(DataDirectory dir : myRoot.dirs()) {
-    System.out.println("Directory " + dir.toString() + " at URL " + dir.url());
+    System.out.println("Directory " + dir.toString() + " at URL " + dir.getUrl());
 }
 
 // List files in the 'robots' directory
 DataDirectory robots = client.dir("data://.my/robots");
 for(DataFile file : robots.files()) {
-    System.out.println("File " + file.toString() + " at URL: " + file.url());
+    System.out.println("File " + file.toString() + " at URL: " + file.getUrl());
 }
 ```
 
