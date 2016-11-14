@@ -108,7 +108,7 @@ import com.algorithmia.TypeToken;
 Algorithm addOne = client.algo("docs/JavaAddOne");
 AlgoResponse response = addOne.pipe(41);
 Integer result = response.as(new TypeToken<Integer>(){});
-Double durationInSeconds = response.getMetadata().duration;
+// -> 42
 ```
 
 ### JSON input/output
