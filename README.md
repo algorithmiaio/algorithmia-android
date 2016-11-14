@@ -95,8 +95,8 @@ Call an algorithm with text input by simply passing a string into its pipe metho
 
 ```java
 Algorithm algo = client.algo("algo://demo/Hello/0.1.1");
-AlgoResponse result = algo.pipe("HAL 9000");
-System.out.println(result.asString());
+AlgoResponse response = algo.pipe("HAL 9000");
+System.out.println(response.asString());
 // -> Hello HAL 9000
 ```
 
@@ -120,9 +120,9 @@ import com.algorithmia.TypeToken;
 
 Algorithm algo = client.algo("algo://WebPredict/ListAnagrams/0.1.0");
 List<String> words = Arrays.asList(("transformer", "terraforms", "retransform");
-AlgoResponse result = algo.pipe(words);
+AlgoResponse response = algo.pipe(words);
 // WebPredict/ListAnagrams returns a JSON array of strings, so change to Java array
-List<String> anagrams = result.as(new TypeToken<List<String>>(){});
+List<String> anagrams = response.as(new TypeToken<List<String>>(){});
 // -> ["transformer", "retransform"]
 ```
 
@@ -132,6 +132,7 @@ If you already have serialized JSON, you can use `pipeJson` and call `asJsonStri
 Algorithm algo = client.algo("algo://WebPredict/ListAnagrams/0.1.0");
 String jsonWords = "[\"transformer\", \"terraforms\", \"retransform\"]";
 AlgoResponse response = algo.pipeJson(jsonWords);
+response.asJsonString();
 // -> "[\"transformer\", \"retransform\"]"
 ```
 
@@ -146,8 +147,8 @@ import org.apache.commons.io.FileUtils;
 URL url = new URL("https://stopthehitch.files.wordpress.com/2013/06/arnold-schwarzenegger-1920x1080.jpg");
 byte[] input = IOUtils.toByteArray(url.openConnection().getInputStream());
 // Call SmartThumbnail algorithm passing in byte array as input
-AlgoResponse result = client.algo("opencv/SmartThumbnail/0.1").pipe(input);
-byte[] buffer = result.as(new TypeToken<byte[]>(){});
+AlgoResponse response = client.algo("opencv/SmartThumbnail/0.1").pipe(input);
+byte[] buffer = response.as(new TypeToken<byte[]>(){});
 // -> [byte array]
 ```
 
@@ -158,8 +159,8 @@ API errors will result in the call to `pipe` throwing `APIException`. Errors tha
 ```java
 Algorithm algo = client.algo("util/whoopsWrongAlgo")
 try {
-    AlgoResponse result = algo.pipe("Hello, world!");
-    String output = result.asString();
+    AlgoResponse response = algo.pipe("Hello, world!");
+    String output = response.asString();
     algoOutput.setText(output)
 } catch (AlgorithmException e) {
     AlgoFailure failure = (AlgoFailure) response;
@@ -176,7 +177,8 @@ long lg = 600L;
 Algorithm algo = client.algo("algo://demo/Hello/0.1.1")
                          .setTimeout(lg, TimeUnit.MINUTES)
                          .setStdout(true);
-AlgoResponse result = algo.pipe("HAL 9000");
+AlgoResponse response = algo.pipe("HAL 9000");
+response.asJsonString();
 // -> "Hello Hal 9000"
 ```
 **Note:** setStdout(true) is ignored if you do not have access to the algorithm source.
