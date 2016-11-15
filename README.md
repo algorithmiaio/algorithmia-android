@@ -22,7 +22,7 @@ For API documentation, see the [JavaDocs](https://algorithmia.com/docs/lang/java
 
 To add the Algorithmia Android client, add the following line to your app/build.gradle file:
 
-```
+```java
   compile "com.algorithmia:algorithmia-android:1.0.1"
 ```
 
